@@ -3,10 +3,10 @@
 import { createClient } from "@supabase/supabase-js";
 import { useState } from "react";
 
-// ⚠ 自分の Supabase プロジェクト情報を入れてね
+// ✅ 環境変数から取得
 const supabase = createClient(
-  "YOUR_PROJECT_URL",
-  "YOUR_ANON_PUBLIC_KEY"
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
 
   const detonate = async () => {
     const confirm1 = confirm(
-      "⚠ 本当に爆破しますか？\nこの操作は元に戻せません。"
+      "⚠ 本当に削除しますか？\nこの操作は元に戻せません。"
     );
     if (!confirm1) return;
 
@@ -23,16 +23,15 @@ export default function Home() {
     );
     if (!confirm2) return;
 
-    // posts テーブルの全データ削除
     const { error } = await supabase
       .from("posts")
       .delete()
       .neq("id", 0);
 
     if (error) {
-      setMessage("爆破失敗: " + error.message);
+      setMessage("削除失敗: " + error.message);
     } else {
-      setMessage("💥 爆破完了！データは消滅しました。");
+      setMessage("削除完了！データは消滅しました。");
     }
   };
 
@@ -41,7 +40,7 @@ export default function Home() {
       <h1 style={styles.title}>DATA PURGE SYSTEM</h1>
 
       <button style={styles.button} onClick={detonate}>
-        ☢ 爆破
+        削除
       </button>
 
       <p style={styles.message}>{message}</p>
